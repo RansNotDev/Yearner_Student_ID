@@ -230,6 +230,8 @@ async function fetchAiQuote() {
   return data.quote.trim();
 }
 
+let lastShownQuote = "";
+
 function randomLocalYearningQuote(lang) {
   const chosen = String(lang || "en").toLowerCase() === "tl" ? "tl" : "en";
 
@@ -252,8 +254,13 @@ function randomLocalYearningQuote(lang) {
 
   const list = chosen === "tl" ? quotesTl : quotesEn;
   if (!list.length) return "“…”";
-  const i = Math.floor(Math.random() * list.length);
-  return `“${list[i]}”`;
+  // Try a few times to avoid immediate repeats.
+  for (let tries = 0; tries < 6; tries++) {
+    const i = Math.floor(Math.random() * list.length);
+    const q = `“${list[i]}”`;
+    if (q !== lastShownQuote) return q;
+  }
+  return `“${list[Math.floor(Math.random() * list.length)]}”`;
 }
 
 function wireEvents() {
@@ -297,12 +304,15 @@ function wireEvents() {
     els.quoteOut.textContent = "Generating quote...";
     try {
       const q = await fetchAiQuote();
-      els.quoteOut.textContent = q.startsWith("“") ? q : `“${q}”`;
+      const shown = q.startsWith("“") ? q : `“${q}”`;
+      els.quoteOut.textContent = shown;
+      lastShownQuote = shown;
     } catch (e) {
       // Fallback to local quotes so the page still works offline/static.
       const lang = (els.quoteLangSelect && els.quoteLangSelect.value) || "en";
       const fallback = randomLocalYearningQuote(lang);
       els.quoteOut.textContent = fallback.startsWith("“") ? fallback : `“${fallback}”`;
+      lastShownQuote = els.quoteOut.textContent;
     } finally {
       els.quoteBtn.disabled = false;
     }
@@ -315,11 +325,14 @@ function wireEvents() {
       els.quoteOut.textContent = "Generating quote...";
       try {
         const q = await fetchAiQuote();
-        els.quoteOut.textContent = q.startsWith("“") ? q : `“${q}”`;
+        const shown = q.startsWith("“") ? q : `“${q}”`;
+        els.quoteOut.textContent = shown;
+        lastShownQuote = shown;
       } catch (e) {
         const lang = (els.quoteLangSelect && els.quoteLangSelect.value) || "en";
         const fallback = randomLocalYearningQuote(lang);
         els.quoteOut.textContent = fallback.startsWith("“") ? fallback : `“${fallback}”`;
+        lastShownQuote = els.quoteOut.textContent;
       } finally {
         els.aiQuoteBtn.disabled = false;
       }
