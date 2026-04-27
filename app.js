@@ -10,6 +10,9 @@ const els = {
   socialSelect: document.getElementById("socialSelect"),
   socialUserInput: document.getElementById("socialUserInput"),
   photoInput: document.getElementById("photoInput"),
+  photoFrame: document.getElementById("photoFrame"),
+  choosePhotoBtn: document.getElementById("choosePhotoBtn"),
+  photoFileName: document.getElementById("photoFileName"),
   newIdBtn: document.getElementById("newIdBtn"),
   quoteBtn: document.getElementById("quoteBtn"),
   downloadBtn: document.getElementById("downloadBtn"),
@@ -88,6 +91,31 @@ async function fileToCroppedDataUrl(file) {
   }
 
   return canvas.toDataURL("image/jpeg", 0.92);
+}
+
+async function setPhotoFromFile(file) {
+  if (!file) return;
+  try {
+    const dataUrl = await fileToCroppedDataUrl(file);
+    els.photoPreview.src = dataUrl;
+    if (els.photoFileName) {
+      els.photoFileName.textContent = file.name || "Selected image";
+    }
+  } catch (e) {
+    // Fallback: show raw image if crop fails for any reason
+    const url = URL.createObjectURL(file);
+    els.photoPreview.src = url;
+    setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    if (els.photoFileName) {
+      els.photoFileName.textContent = file.name || "Selected image";
+    }
+  }
+}
+
+async function setPhotoFromBlob(blob) {
+  if (!blob) return;
+  const file = new File([blob], "pasted-image.png", { type: blob.type || "image/png" });
+  await setPhotoFromFile(file);
 }
 
 const DEPARTMENTS = [
@@ -402,13 +430,12 @@ function setDefaults() {
   currentStudentId = generateStudentId();
   els.idOut.textContent = currentStudentId;
   if (els.barcodeValue) els.barcodeValue.textContent = currentStudentId;
-
   renderBarcode(currentStudentId);
   renderQrFromSocial();
 }
 
 function renderBarcode(studentId) {
-  // JsBarcode uses the same value shown above
+  // Barcode represents the same ID shown above
   JsBarcode(els.barcode, studentId, {
     format: "CODE128",
     lineColor: "#111827",
@@ -530,22 +557,78 @@ function wireEvents() {
   els.photoInput.addEventListener("change", async () => {
     const file = els.photoInput.files && els.photoInput.files[0];
     if (!file) return;
-    try {
-      const dataUrl = await fileToCroppedDataUrl(file);
-      els.photoPreview.src = dataUrl;
-    } catch (e) {
-      // Fallback: show raw image if crop fails for any reason
-      const url = URL.createObjectURL(file);
-      els.photoPreview.src = url;
-      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    await setPhotoFromFile(file);
+  });
+
+  // Better "search on device": custom button + clicking the photo box opens picker.
+  if (els.choosePhotoBtn) {
+    els.choosePhotoBtn.addEventListener("click", () => {
+      if (els.photoInput) els.photoInput.click();
+    });
+  }
+  if (els.photoFrame) {
+    els.photoFrame.addEventListener("click", () => {
+      if (els.photoInput) els.photoInput.click();
+    });
+    els.photoFrame.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (els.photoInput) els.photoInput.click();
+      }
+    });
+  }
+
+  // Allow paste (Ctrl+V) of copied images (screenshots, copied photos).
+  document.addEventListener("paste", async (e) => {
+    // Only handle paste when user is interacting with the photo area or form.
+    const active = document.activeElement;
+    const allow =
+      active === els.photoFrame ||
+      active === els.photoInput ||
+      (els.choosePhotoBtn && active === els.choosePhotoBtn) ||
+      (active && active.id === "photoFileName");
+    if (!allow) return;
+
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items || !items.length) return;
+
+    for (const it of items) {
+      if (it && it.type && it.type.startsWith("image/")) {
+        const blob = it.getAsFile();
+        if (blob) {
+          e.preventDefault();
+          await setPhotoFromBlob(blob);
+        }
+        return;
+      }
     }
   });
+
+  // Drag & drop image onto the photo frame (optional UX).
+  if (els.photoFrame) {
+    els.photoFrame.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+    els.photoFrame.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      const file =
+        e.dataTransfer &&
+        e.dataTransfer.files &&
+        e.dataTransfer.files[0] &&
+        e.dataTransfer.files[0].type &&
+        e.dataTransfer.files[0].type.startsWith("image/")
+          ? e.dataTransfer.files[0]
+          : null;
+      if (file) await setPhotoFromFile(file);
+    });
+  }
 
   els.newIdBtn.addEventListener("click", () => {
     // Reset all user-editable fields, then generate a fresh ID.
     els.nameInput.value = "";
     els.socialUserInput.value = "";
     els.photoInput.value = "";
+    if (els.photoFileName) els.photoFileName.textContent = "No file chosen";
 
     // Reset selects to their first option/defaults
     els.deptSelect.selectedIndex = 0;

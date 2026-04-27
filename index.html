@@ -78,7 +78,12 @@
 
         <label>
             Upload photo
-            <input id="photoInput" type="file" accept="image/*" />
+            <input id="photoInput" class="fileInput" type="file" accept="image/*" />
+            <div class="filePickerRow">
+              <button id="choosePhotoBtn" class="choosePhotoBtn" type="button">Choose photo</button>
+              <span id="photoFileName" class="photoFileName">No file chosen</span>
+            </div>
+            <div class="photoHint">Tip: You can also click the photo box and paste (Ctrl+V) a copied image.</div>
         </label>
 
     <label>
@@ -105,7 +110,7 @@
 
             <div class="body">
             <div class="left">
-                <div class="photoFrame">
+                <div class="photoFrame" id="photoFrame" tabindex="0" title="Click then paste (Ctrl+V) or drop an image">
                 <img id="photoPreview" alt="Student photo" />
                 </div>
                 <div class="nameBelowPhoto" id="nameOut">—</div>
@@ -145,7 +150,9 @@
                 </div>
 
                 <div class="barWrap">
-                    <svg id="barcode"></svg>
+                    <div class="barBox" aria-label="Student barcode">
+                      <svg id="barcode"></svg>
+                    </div>
                     <div class="codeValue" id="barcodeValue">—</div>
                 </div>
                 </div>
