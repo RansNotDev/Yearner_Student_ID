@@ -21,6 +21,8 @@ const els = {
   joinedOut: document.getElementById("joinedOut"),
   typeOut: document.getElementById("typeOut"),
   quoteOut: document.getElementById("quoteOut"),
+  quoteLangSelect: document.getElementById("quoteLangSelect"),
+  aiQuoteBtn: document.getElementById("aiQuoteBtn"),
 
   qr: document.getElementById("qr"),
   qrCenterBadge: document.getElementById("qrCenterBadge"),
@@ -209,7 +211,23 @@ function updateTextOutputs() {
 }
 
 async function fetchAiQuote() {
-  return randomLocalYearningQuote();
+  const lang = (els.quoteLangSelect && els.quoteLangSelect.value) || "en";
+
+  const res = await fetch(`./api/quote?lang=${encodeURIComponent(lang)}`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Quote API failed: ${res.status}`);
+  }
+
+  const data = await res.json();
+  if (!data || typeof data.quote !== "string" || !data.quote.trim()) {
+    throw new Error("Quote API returned invalid payload");
+  }
+
+  return data.quote.trim();
 }
 
 function randomLocalYearningQuote() {
@@ -259,6 +277,7 @@ function wireEvents() {
   });
 
   els.quoteBtn.addEventListener("click", async () => {
+    // Backward-compatible: this older button still generates a quote
     els.quoteBtn.disabled = true;
     const old = els.quoteOut.textContent;
     els.quoteOut.textContent = "Generating quote...";
@@ -266,12 +285,30 @@ function wireEvents() {
       const q = await fetchAiQuote();
       els.quoteOut.textContent = q.startsWith("“") ? q : `“${q}”`;
     } catch (e) {
-      els.quoteOut.textContent = old;
-      alert("Could not fetch AI quote. Please try again.");
+      // Fallback to local quotes so the page still works offline/static.
+      const fallback = randomLocalYearningQuote();
+      els.quoteOut.textContent = fallback.startsWith("“") ? fallback : `“${fallback}”`;
     } finally {
       els.quoteBtn.disabled = false;
     }
   });
+
+  if (els.aiQuoteBtn) {
+    els.aiQuoteBtn.addEventListener("click", async () => {
+      els.aiQuoteBtn.disabled = true;
+      const old = els.quoteOut.textContent;
+      els.quoteOut.textContent = "Generating quote...";
+      try {
+        const q = await fetchAiQuote();
+        els.quoteOut.textContent = q.startsWith("“") ? q : `“${q}”`;
+      } catch (e) {
+        const fallback = randomLocalYearningQuote();
+        els.quoteOut.textContent = fallback.startsWith("“") ? fallback : `“${fallback}”`;
+      } finally {
+        els.aiQuoteBtn.disabled = false;
+      }
+    });
+  }
 
   els.downloadBtn.addEventListener("click", async () => {
     if (typeof html2canvas !== "function") {
