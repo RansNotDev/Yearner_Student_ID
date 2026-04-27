@@ -7,12 +7,14 @@
         --ink:#111827;
         --muted:#6b7280;
         --line:#e5e7eb;
+        --font-ui: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        --font-condensed: Oswald, Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
     }
     
     *{box-sizing:border-box}
     body{
         margin:0;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        font-family: var(--font-ui);
         background: radial-gradient(1200px 600px at 20% 0%, #132a52 0%, var(--bg) 55%);
         color:#e5e7eb;
     }
@@ -87,19 +89,46 @@
         box-shadow: 0 25px 80px rgba(0,0,0,0.45);
         border:1px solid rgba(15,61,138,0.15);
     }
+
+    /* Export mode: lock the "desktop" layout for consistent downloads */
+    .idCard.capture{
+        width:560px !important;
+    }
+    .idCard.capture .body{
+        grid-template-columns: 210px 1fr !important;
+        padding:16px 16px 12px !important;
+        gap:16px !important;
+    }
+    .idCard.capture .codes{
+        grid-template-columns: 160px 1fr !important;
+    }
     
     .header{
         background: linear-gradient(180deg, #0c3a86 0%, #0a2f6c 70%, #082a61 100%);
-        padding:20px 20px;
+        padding:12px 20px 14px;
         position:relative;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:6px;
+    }
+    .headerCrest{
+        width:60px;
+        height:60px;
+        object-fit:contain;
+        display:block;
+        background: transparent;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+        opacity:0.98;
     }
     .schoolName{
         color:white;
         font-weight:900;
         font-style:bold;
-        font-family: 'Condensed Sans Serif', League Gothic;
+        font-family: var(--font-condensed);
         letter-spacing:1px;
-        font-size:30px;
+        font-size:28px;
         text-transform:uppercase;
         text-align:center;
     }
@@ -132,6 +161,19 @@
         object-fit:cover;
         display:block;
     }
+
+    .nameBelowPhoto{
+        text-align:center;
+        font-weight:900;
+        font-size:16px;
+        letter-spacing:0.2px;
+        color:var(--ink);
+        padding:4px 10px 0;
+        font-family: var(--font-ui);
+        text-transform:uppercase;
+        line-height:1.1;
+        word-break:break-word;
+    }
     
     .roleBadge{
         background: linear-gradient(180deg, var(--blue), var(--blue2));
@@ -142,53 +184,77 @@
         font-weight:900;
         letter-spacing:0.1px;
         font-size:18px;
-        font-family: 'Condensed Sans Serif', League Gothic;
+        font-family: var(--font-condensed);
     }
     
     .validBox{
         border:1px solid var(--line);
         border-radius:14px;
-        padding:12px;
+        padding:10px 12px;
+        /* Push VALID UNTIL box down to balance spacing above footer */
+        margin-top:auto;
+    }
+    .validLine{
+        display:flex;
+        align-items:baseline;
+        justify-content:center;
+        gap:10px;
+        white-space:nowrap;
     }
     .validLabel{
         color:var(--blue2);
-        font-size:18px; 
+        font-size:16px; 
         font-weight:900;
         font-style:bold;
-        font-family: 'Condensed Sans Serif', League Gothic;
+        font-family: var(--font-condensed);
         text-align:center;
     }
     .validValue{
-        font-size:22px; 
+        font-size:18px; 
         font-weight:900; 
         letter-spacing:0.6px; 
-        font-family: 'Condensed Sans Serif', League Gothic;
+        font-family: var(--font-condensed);
         text-align:center;
     }
     
-    .right{display:flex; flex-direction:column; gap:10px}
+    .right{display:flex; flex-direction:column; gap:8px}
     
     .titleRow{
         display:flex;
-        align-items:flex-start;
+        align-items:center;
         justify-content:space-between;
         gap:10px;
+        padding-bottom:10px;
+        border-bottom:2px solid rgba(12,57,136,0.35); /* horizontal line */
     }
-    .faculty{
-        font-weight:900;
+    .cardTitleTop{
+        font-family: var(--font-condensed);
+        font-weight:700;
         font-size:24px;
         color:var(--blue2);
-        letter-spacing:8px;
+        letter-spacing:7px;
+        line-height:1.0;
+        text-transform:uppercase;
     }
-    .idCardText{
-        font-weight:900;
-        font-style:bold;
+    .cardTitleMid{
+        font-family: var(--font-condensed);
+        font-weight:700;
         font-size:18px;
-        height: 50px;
-        font-family: 'Condensed Sans Serif', League Gothic;
-        color: var(--blue2);
+        color:var(--blue2);
+        letter-spacing:0.6px;
         line-height:1.05;
-        letter-spacing:0.4px;
+        text-transform:uppercase;
+        margin-top:2px;
+    }
+    .cardTitleBot{
+        font-family: var(--font-condensed);
+        font-weight:700;
+        font-size:22px;
+        color:var(--blue2);
+        letter-spacing:0.6px;
+        line-height:1.0;
+        text-transform:uppercase;
+        margin-top:0px;
     }
     .title{
         padding-top:2px;
@@ -204,6 +270,8 @@
         justify-content:center;
         overflow:visible;
         margin : auto;
+        padding-left:14px;
+        border-left:2px solid rgba(12,57,136,0.35); /* vertical line */
     }
 
     .logoImg{
@@ -214,23 +282,25 @@
     }
     
     .fields{
-        border-top:2px solid rgba(11,47,107,0.35);
-        padding-top:12px;
+        /* header already has the single horizontal divider */
+        padding-top:10px;
         display:grid;
         gap:8px;
     }
     .field{
         font-size:13px;
         display:grid;
-        grid-template-columns: 120px 14px 1fr;
+        /* tighter label/colon spacing like a real ID */
+        grid-template-columns: 92px 10px 1fr;
         align-items:baseline;
-        column-gap:8px;
+        column-gap:6px;
     }
     .field .k{
         color:#111827;
         font-weight:900;
         text-transform:uppercase;
         letter-spacing:0.35px;
+        white-space:nowrap;
     }
     .field .c{
         color:#111827;
@@ -239,14 +309,15 @@
     }
     .field .v{
         color:#111827;
-        font-weight:800;
+        font-weight:400;
+        word-break:break-word;
     }
     
     .codes{
         display:grid;
     grid-template-columns: 160px 1fr;
         gap:14px;
-        align-items:end;
+        align-items:start;
         border-top:1px solid var(--line);
         padding-top:12px;
     }
@@ -295,7 +366,7 @@
     .barWrap{
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:6px;
     align-items:center;
     width:100%;
     }
@@ -304,12 +375,14 @@
     height:82px;
     max-width:380px;
   }
-    .codeLabel{font-size:11px; color:var(--muted); text-align:center}
+    /* Hide the QR label text (e.g., "TikTok QR") */
+    .codeLabel{display:none}
   .codeValue{
     font-size:12px;
     font-weight:900;
     color:#111827;
     letter-spacing:0.8px;
+    white-space:nowrap;
   }
     
     .quote{
@@ -359,4 +432,56 @@
     @media (max-width: 980px){
         .page{grid-template-columns:1fr; }
         .idCard{width:min(560px, 100%);}
+        .btnRow{flex-wrap:wrap}
+        .btnRow button{flex:1 1 180px}
+    }
+
+    /* Tablets / small laptops */
+    @media (max-width: 720px){
+        .page{padding:16px}
+        .idCard{border-radius:18px}
+        .body{grid-template-columns: 190px 1fr; gap:12px; padding:14px 14px 10px}
+        .header{padding:10px 16px 12px}
+        .schoolName{font-size:24px}
+        .headerCrest{width:54px; height:54px}
+        .logoCircle{width:104px; height:104px}
+        .cardTitleTop{font-size:22px; letter-spacing:6px}
+        .cardTitleMid{font-size:17px}
+        .cardTitleBot{font-size:20px}
+        .roleBadge{padding:18px 12px; font-size:16px}
+    }
+
+    /* Phones */
+    @media (max-width: 520px){
+        .page{padding:12px}
+        .controls{padding:14px}
+        .btnRow button{flex:1 1 100%}
+        .idCard{border-radius:16px}
+        .header{padding:10px 14px 12px}
+        .schoolName{font-size:22px}
+
+        /* Stack photo section above details for narrow screens */
+        .body{grid-template-columns:1fr; gap:12px}
+        .left{max-width:260px; margin:0 auto; width:100%}
+        .right{gap:10px}
+
+        .titleRow{gap:12px}
+        .title{max-width:none}
+        .logoCircle{width:96px; height:96px; padding-left:12px}
+
+        .codes{grid-template-columns:1fr; gap:12px}
+        #barcode{max-width:320px}
+        .codeValue{font-size:11px; letter-spacing:0.6px}
+        .quote{padding:22px 14px}
+    }
+
+    /* Smallest phones */
+    @media (max-width: 380px){
+        .schoolName{font-size:20px}
+        .headerCrest{width:48px; height:48px}
+        .cardTitleTop{font-size:20px; letter-spacing:5px}
+        .cardTitleMid{font-size:16px}
+        .cardTitleBot{font-size:19px}
+        .field{grid-template-columns: 86px 10px 1fr}
+        #barcode{max-width:280px}
     }

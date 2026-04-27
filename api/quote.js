@@ -37,7 +37,52 @@ function safeJson(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
-function buildPrompt(lang) {
+function studentTypeBlock(typeRaw, lang) {
+  const type = String(typeRaw || "").trim();
+  const chosen = lang === "tl" ? "tl" : "en";
+
+  const TYPES = {
+    "Student Yearner": {
+      profile:
+        'The "Poet" of the campus. They spend their days staring out of windows and their nights crafting long, profound captions about "what could have been."',
+      behavior:
+        "They specialize in Load-Bearing Pining, carrying the weight of a crush or a past love for years without ever actually making a move.",
+      signatureTl: "Sana sa susunod na buhay, tayo naman.",
+      signatureEn: "I hope in the next life, it's our turn.",
+    },
+    "Student Back-Burner": {
+      profile:
+        'The "Loyalist" or the "Professional Substitute." They are always "on-call," waiting for a text that only comes when the other person is bored or lonely.',
+      behavior:
+        "They are experts in Low-Heat Maintenance, keeping their feelings warm just in case they finally get their turn in the starting lineup.",
+      signatureTl: "Dito lang ako, 'wag ka mag-alala.",
+      signatureEn: "I'm just here, don't worry.",
+    },
+    "Student Relapser": {
+      profile:
+        'The "Night-Shift Specialist." They appear to be moving on during the day, but their entire progress resets once the clock hits 10:00 PM.',
+      behavior:
+        "They are masters of Digital Archaeology, digging up old photos and \"accidentally\" viewing Instagram Stories from three years ago.",
+      signatureTl:
+        "Isang check lang sa profile, promise, 'di ko icha-chat.",
+      signatureEn: "Just one check on the profile, I promise I won't message.",
+    },
+  };
+
+  const meta = TYPES[type];
+  if (!meta) return "";
+
+  const signature = chosen === "tl" ? meta.signatureTl : meta.signatureEn;
+  return [
+    "Student type context (use this voice):",
+    `Type: ${type}`,
+    `Profile: ${meta.profile}`,
+    `Behavior: ${meta.behavior}`,
+    `Signature quote (example, do not copy word-for-word): "${signature}"`,
+  ].join("\n");
+}
+
+function buildPrompt(lang, typeRaw) {
   const languageInstruction =
     lang === "tl"
       ? "Write in Tagalog."
@@ -46,8 +91,9 @@ function buildPrompt(lang) {
   // "Lived yearner" = heartfelt, grounded, not generic motivational, not fictional worldbuilding.
   // Also enforce output shape: a single quote line only, no extra text.
   return [
-    "You generate one short 'yearner' quote (pang-yearner).",
+    "You generate one short student 'hugot' quote for a university ID card.",
     languageInstruction,
+    studentTypeBlock(typeRaw, lang),
     "Tone: lived, intimate, raw, gentle; romantic yearning; modern and relatable.",
     "Avoid: clichés, generic motivation, hashtags, emojis, song lyrics, named people, and any mention of AI.",
     "Avoid repeating phrasing and structure from your recent outputs; be meaningfully different.",
@@ -71,6 +117,7 @@ export default async function handler(req, res) {
 
     const lang = String((req.query && req.query.lang) || "en").toLowerCase();
     const chosen = lang === "tl" ? "tl" : "en";
+    const type = (req.query && req.query.type) || "";
 
     const endpoint =
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
@@ -79,7 +126,7 @@ export default async function handler(req, res) {
       contents: [
         {
           role: "user",
-          parts: [{ text: buildPrompt(chosen) }],
+          parts: [{ text: buildPrompt(chosen, type) }],
         },
       ],
       generationConfig: {

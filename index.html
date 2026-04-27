@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Enchong Dee University Student ID Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
 
     <!-- CDN libs (no npm, no build tools) -->
@@ -27,14 +30,31 @@
             Student type
             <select id="typeSelect">
             <option value="Student Yearner" selected>Student Yearner</option>
+            <option value="Student Back-Burner">Student Back-Burner</option>
+            <option value="Student Relapser">Student Relapser</option>
             </select>
         </label>
 
         <label>
             Department
             <select id="deptSelect">
-            <option value="Yearning">YEARNING</option>
+            <option value="College of Relapse Engineering (BS Relapse Engineering)" selected>College of Relapse Engineering (BS Relapse Engineering)</option>
+            <option value="School of Yearning Architecture (BS EngiYearning)">School of Yearning Architecture (BS EngiYearning)</option>
+            <option value="Department of Information Heart-Technology (BS Heart-IT)">Department of Information Heart-Technology (BS Heart-IT)</option>
+            <option value="School of Rebound Logistics (BS Rebound Management)">School of Rebound Logistics (BS Rebound Management)</option>
+            <option value="Institute of Back-Burner Science (BS Back-Burner Studies)">Institute of Back-Burner Science (BS Back-Burner Studies)</option>
+            <option value="School of Delusional Science (BS Delulu Manifestation)">School of Delusional Science (BS Delulu Manifestation)</option>
+            <option value="College of Situationship Arts (BA Situationship Dynamics)">College of Situationship Arts (BA Situationship Dynamics)</option>
+            <option value="Department of Digital Ghosting (BS Ghosting &amp; Evasion)">Department of Digital Ghosting (BS Ghosting &amp; Evasion)</option>
+            <option value="Faculty of Bitter-Sweetness (BA Revenge Studies)">Faculty of Bitter-Sweetness (BA Revenge Studies)</option>
+            <option value="School of Platonic Engineering (BS Friendzone Management)">School of Platonic Engineering (BS Friendzone Management)</option>
+            <option value="Institute of Signal Cryptography (BS Mixed Signal Analysis)">Institute of Signal Cryptography (BS Mixed Signal Analysis)</option>
             </select>
+        </label>
+
+        <label>
+            Course
+            <select id="courseSelect"></select>
         </label>
 
         <label>
@@ -72,10 +92,6 @@
         <div class="btnRow">
             <button id="newIdBtn" type="button">Generate new Student ID</button>
             <button id="quoteBtn" type="button">New yearning quote</button>
-        </div>
-
-        <div class="btnRow">
-        <button id="aiQuoteBtn" class="quoteBtn" type="button">Generate</button>
             <button id="downloadBtn" type="button">Download ID</button>
         </div>
         </section>
@@ -83,6 +99,7 @@
         <section class="preview">
         <div class="idCard" id="idCard">
             <div class="header">
+            <img class="headerCrest" src="./Image/EDULOGO_WHITE.png" alt="EDU crest" />
             <div class="schoolName">ENCHONG DEE UNIVERSITY</div>
             </div>
 
@@ -91,31 +108,29 @@
                 <div class="photoFrame">
                 <img id="photoPreview" alt="Student photo" />
                 </div>
-                <div class="roleBadge">STUDENT YEARNER</div>
+                <div class="nameBelowPhoto" id="nameOut">—</div>
+                <div class="roleBadge" id="roleBadge">STUDENT YEARNER</div>
                 <div class="validBox">
-                <div class="validLabel">VALID UNTIL:</div>
-                <div class="validValue">LIFETIME</div>
+                <div class="validLine"><span class="validLabel">VALID UNTIL:</span><span class="validValue">LIFETIME</span></div>
                 </div>
             </div>
 
             <div class="right">
                 <div class="titleRow">
                 <div class="title">
-                    <div class="faculty">STUDENT</div>
-                    <div class="idCardText">IDENTIFICATION<br/>CARD</div>
+                    <div class="cardTitleTop">STUDENT</div>
+                    <div class="cardTitleMid">IDENTIFICATION</div>
+                    <div class="cardTitleBot">CARD</div>
                 </div>
                 <div class="logoCircle" aria-label="EDU logo">
-                    <img class="logoImg" src="./Image/EDULOGO.png" alt="EDU logo" />
+                    <img class="logoImg" src="./Image/EDULOGO_BLUE.png" alt="EDU logo" />
                 </div>
                 </div>
 
                 <div class="fields">
-                <div class="field"><span class="k">POSITION</span><span class="c">:</span><span class="v">STUDENT</span></div>
-                <div class="field"><span class="k">NAME</span><span class="c">:</span><span class="v" id="nameOut">—</span></div>
-                <div class="field"><span class="k">DEPARTMENT</span><span class="c">:</span><span class="v" id="deptOut">Yearning</span></div>
                 <div class="field"><span class="k">STUDENT ID</span><span class="c">:</span><span class="v" id="idOut">—</span></div>
-                <div class="field"><span class="k">JOINED</span><span class="c">:</span><span class="v" id="joinedOut">—</span></div>
-                <div class="field"><span class="k">TYPE</span><span class="c">:</span><span class="v" id="typeOut">Student Yearner</span></div>
+                <div class="field"><span class="k">DEPARTMENT</span><span class="c">:</span><span class="v" id="deptOut">Yearning</span></div>
+                <div class="field"><span class="k">COURSE</span><span class="c">:</span><span class="v" id="courseOut">—</span></div>
                 </div>
 
                 <div class="codes">
