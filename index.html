@@ -61,12 +61,21 @@
             <input id="photoInput" type="file" accept="image/*" />
         </label>
 
+    <label>
+        Quote language
+        <select id="quoteLangSelect" class="quoteSelect">
+        <option value="en" selected>English</option>
+        <option value="tl">Tagalog</option>
+        </select>
+    </label>
+
         <div class="btnRow">
             <button id="newIdBtn" type="button">Generate new Student ID</button>
             <button id="quoteBtn" type="button">New yearning quote</button>
         </div>
 
         <div class="btnRow">
+        <button id="aiQuoteBtn" class="quoteBtn" type="button">Generate</button>
             <button id="downloadBtn" type="button">Download ID</button>
         </div>
         </section>
@@ -129,15 +138,7 @@
             </div>
 
             <div class="quote">
-            <div class="quoteControls">
-                <label class="quoteLabel" for="quoteLangSelect">Quote language</label>
-                <select id="quoteLangSelect" class="quoteSelect">
-                <option value="en" selected>English</option>
-                <option value="tl">Tagalog</option>
-                </select>
-                <button id="aiQuoteBtn" class="quoteBtn" type="button">Generate</button>
-            </div>
-            <span id="quoteOut">“The right train arrives when you’re ready to board.”</span>
+            <span id="quoteOut">The right train arrives when you’re ready to board.</span>
             </div>
         </div>
         </section>

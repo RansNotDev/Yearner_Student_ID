@@ -230,16 +230,30 @@ async function fetchAiQuote() {
   return data.quote.trim();
 }
 
-function randomLocalYearningQuote() {
-  const quotes = [
+function randomLocalYearningQuote(lang) {
+  const chosen = String(lang || "en").toLowerCase() === "tl" ? "tl" : "en";
+
+  const quotesEn = [
     "I don’t chase the train—I become the reason it stops.",
     "Yearning is proof my heart still believes in arrival.",
     "I’m learning to wait without shrinking my dreams.",
     "Some goodbyes are just promises wearing heavy coats.",
     "If it’s meant for me, it will find me—on time.",
   ];
-  const i = Math.floor(Math.random() * quotes.length);
-  return `“${quotes[i]}”`;
+
+  // Short, "pang-yearner" Tagalog lines; keep them UI-safe (single line).
+  const quotesTl = [
+    "Hindi kita hinahabol—hinihintay ko lang kung babalik ka pa.",
+    "Ang tagal kong tumahimik, pero ikaw pa rin ang ingay ng puso ko.",
+    "Kung hindi tayo ngayon, sana huwag mo akong kalimutan bukas.",
+    "May mga yakap na hindi dumating, pero araw-araw kong naramdaman.",
+    "Kung sa’yo talaga ako, bakit parang palagi kitang pinapaalam?",
+  ];
+
+  const list = chosen === "tl" ? quotesTl : quotesEn;
+  if (!list.length) return "“…”";
+  const i = Math.floor(Math.random() * list.length);
+  return `“${list[i]}”`;
 }
 
 function wireEvents() {
@@ -286,7 +300,8 @@ function wireEvents() {
       els.quoteOut.textContent = q.startsWith("“") ? q : `“${q}”`;
     } catch (e) {
       // Fallback to local quotes so the page still works offline/static.
-      const fallback = randomLocalYearningQuote();
+      const lang = (els.quoteLangSelect && els.quoteLangSelect.value) || "en";
+      const fallback = randomLocalYearningQuote(lang);
       els.quoteOut.textContent = fallback.startsWith("“") ? fallback : `“${fallback}”`;
     } finally {
       els.quoteBtn.disabled = false;
@@ -302,7 +317,8 @@ function wireEvents() {
         const q = await fetchAiQuote();
         els.quoteOut.textContent = q.startsWith("“") ? q : `“${q}”`;
       } catch (e) {
-        const fallback = randomLocalYearningQuote();
+        const lang = (els.quoteLangSelect && els.quoteLangSelect.value) || "en";
+        const fallback = randomLocalYearningQuote(lang);
         els.quoteOut.textContent = fallback.startsWith("“") ? fallback : `“${fallback}”`;
       } finally {
         els.aiQuoteBtn.disabled = false;
