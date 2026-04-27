@@ -1,0 +1,142 @@
+    <!doctype html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>EDU Student ID Generator</title>
+    <link rel="stylesheet" href="./styles.css" />
+
+    <!-- CDN libs (no npm, no build tools) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script defer src="./app.js"></script>
+    </head>
+
+    <body>
+    <main class="page">
+        <section class="controls">
+        <h2>Generate your Student ID</h2>
+
+        <label>
+            Full name
+            <input id="nameInput" type="text" placeholder="Enter your name" maxlength="40" />
+        </label>
+
+        <label>
+            Student type
+            <select id="typeSelect">
+            <option value="Student Yearner" selected>Student Yearner</option>
+            </select>
+        </label>
+
+        <label>
+            Department
+            <select id="deptSelect">
+            <option value="Yearning">Yearning</option>
+            <option value="Arts">Arts</option>
+            <option value="Science">Science</option>
+            <option value="Business">Business</option>
+            <option value="Engineering">Engineering</option>
+            </select>
+        </label>
+
+        <label>
+            Social media
+            <select id="socialSelect">
+            <option value="tiktok" selected>TikTok</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+          <option value="threads">Threads</option>
+            <option value="x">X (Twitter)</option>
+            </select>
+        </label>
+
+        <label>
+            Username (for QR)
+            <div class="igRow">
+            <span class="igPrefix">@</span>
+            <input id="socialUserInput" type="text" placeholder="yourusername" maxlength="30" />
+            </div>
+        </label>
+
+        <label>
+            Upload photo
+            <input id="photoInput" type="file" accept="image/*" />
+        </label>
+
+        <div class="btnRow">
+            <button id="newIdBtn" type="button">Generate new Student ID</button>
+            <button id="quoteBtn" type="button">New yearning quote</button>
+        </div>
+
+        <div class="btnRow">
+            <button id="downloadBtn" type="button">Download ID</button>
+        </div>
+        </section>
+
+        <section class="preview">
+        <div class="idCard" id="idCard">
+            <div class="header">
+            <div class="schoolName">ENCHONG DEE UNIVERSITY</div>
+            </div>
+
+            <div class="body">
+            <div class="left">
+                <div class="photoFrame">
+                <img id="photoPreview" alt="Student photo" />
+                </div>
+                <div class="roleBadge">STUDENT YEARNER</div>
+                <div class="validBox">
+                <div class="validLabel">VALID UNTIL:</div>
+                <div class="validValue">LIFETIME</div>
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="titleRow">
+                <div class="title">
+                    <div class="faculty">STUDENT</div>
+                    <div class="idCardText">IDENTIFICATION<br/>CARD</div>
+                </div>
+                <div class="logoCircle" aria-label="EDU logo">
+                    <img class="logoImg" src="./Image/EDULOGO.png" alt="EDU logo" />
+                </div>
+                </div>
+
+                <div class="fields">
+                <div class="field"><span class="k">POSITION</span><span class="c">:</span><span class="v">STUDENT</span></div>
+                <div class="field"><span class="k">NAME</span><span class="c">:</span><span class="v" id="nameOut">—</span></div>
+                <div class="field"><span class="k">DEPARTMENT</span><span class="c">:</span><span class="v" id="deptOut">Yearning</span></div>
+                <div class="field"><span class="k">STUDENT ID</span><span class="c">:</span><span class="v" id="idOut">—</span></div>
+                <div class="field"><span class="k">JOINED</span><span class="c">:</span><span class="v" id="joinedOut">—</span></div>
+                <div class="field"><span class="k">TYPE</span><span class="c">:</span><span class="v" id="typeOut">Student Yearner</span></div>
+                </div>
+
+                <div class="codes">
+                <div class="qrWrap">
+                    <div class="qrBox">
+                    <div id="qr"></div>
+                  <div id="qrCenterBadge" class="qrCenterBadge" aria-hidden="true">
+                    <img id="qrBadgeImg" class="qrBadgeImg" alt="" />
+                  </div>
+                    </div>
+                    <div class="codeLabel" id="qrLabel">SOCIAL QR</div>
+                </div>
+
+                <div class="barWrap">
+                    <svg id="barcode"></svg>
+                    <div class="codeValue" id="barcodeValue">—</div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="quote">
+            <span id="quoteOut">“The right train arrives when you’re ready to board.”</span>
+            </div>
+        </div>
+        </section>
+    </main>
+    </body>
+    </html>
